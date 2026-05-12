@@ -204,12 +204,23 @@ def render_dashboard():
 
     st.markdown('<div class="dash-center">', unsafe_allow_html=True)
     st.title("🌾 Dual-Architecture Scanner")
-    st.markdown("<p style='text-align: center;'>Upload an image of a Black Gram leaf to diagnose.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center;'>Upload an image or use your camera to diagnose a Black Gram leaf.</p>", unsafe_allow_html=True)
     
-    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+    tab1, tab2 = st.tabs(["📁 Upload Image", "📸 Camera Input"])
     
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
+    uploaded_file = None
+    camera_image = None
+    
+    with tab1:
+        uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+        
+    with tab2:
+        camera_image = st.camera_input("Take a picture of the leaf")
+        
+    img_source = uploaded_file if uploaded_file is not None else camera_image
+    
+    if img_source is not None:
+        image = Image.open(img_source)
         # Display image somewhat smaller so comparison fits
         col_img1, col_img2, col_img3 = st.columns([1, 2, 1])
         with col_img2:
